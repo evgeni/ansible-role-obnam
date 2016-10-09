@@ -1,0 +1,32 @@
+- hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: "Build hosts file"
+      lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_default_ipv4.address }} {{ hostvars[item].ansible_fqdn }} {{item}}" state=present
+      when: hostvars[item].ansible_default_ipv4.address is defined
+      with_items: "{{groups['all']}}"
+
+- name: obnam target
+  hosts: obnam
+  become: true
+  gather_facts: false
+  vars:
+    backup_clients:
+      - client
+  roles:
+    - role: obnam
+      backup_node_type: target
+
+- name: obnam client
+  hosts: client
+  become: true
+  gather_facts: false
+  vars:
+    backup_clients:
+      - client
+    backup_targets:
+      - obnam
+  roles:
+    - role: obnam
+      backup_node_type: client
