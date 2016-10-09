@@ -1,0 +1,32 @@
+- name: install {{ item }}
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - obnam
+    - gnupg
+- name: generate ssh key for transfer
+  user:
+    name: root
+    generate_ssh_key: yes
+    ssh_key_file: .ssh/backup_key
+  register: backup_key
+- name: deploy ssh key to storage
+  authorized_key:
+    user: "{{ ansible_hostname }}"
+    key: "{{ backup_key.ssh_public_key }}"
+    exclusive: yes
+    path: /etc/ssh/authorized_keys/{{ ansible_hostname }}
+    manage_dir: no
+  delegate_to: "{{ item }}"
+  with_items:
+    - "{{ backup_targets }}"
+
+# obnam --client-name=ippai \
+# --encrypt-with=BFB74804AD8ACF73894CE2AAB12DFE314A9467F3 \
+# --exclude-caches --one-file-system \
+# --repository=sftp://ippai@obnam/backup/ \
+# --ssh-key=/root/.ssh/backup_key backup /bin
+# obnam add-key ippai --keyid <meins>
+# obnam backup /
+

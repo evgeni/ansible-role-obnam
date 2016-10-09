@@ -1,0 +1,5 @@
+---
+# defaults file for obnam
+backup_node_type: client
+backup_targets: []
+backup_clients: []

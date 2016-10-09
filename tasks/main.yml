@@ -1,0 +1,6 @@
+---
+# tasks file for obnam
+- include: tasks/target.yml
+  when: backup_node_type == 'target'
+- include: tasks/client.yml
+  when: backup_node_type == 'client'

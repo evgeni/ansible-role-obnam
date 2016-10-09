@@ -1,0 +1,58 @@
+- name: create sftponly group
+  group:
+    name: sftponly
+    state: present
+- name: create backup folder
+  file:
+    name: /srv/backup
+    state: directory
+- name: create /etc/ssh/authorized_keys folder
+  file:
+    name: /etc/ssh/authorized_keys
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+- name: sftponly sshd config
+  blockinfile:
+    block: |
+      Match Group sftponly
+          AllowTcpForwarding no
+          AllowStreamLocalForwarding no
+          AuthenticationMethods publickey
+          AuthorizedKeysFile /etc/ssh/authorized_keys/%u
+          ChrootDirectory %h
+          ForceCommand internal-sftp
+          GatewayPorts no
+          PermitTTY no
+          PermitTunnel no
+          X11Forwarding no
+    marker: "# {mark} ANSIBLE MANAGED BLOCK for sftponly users"
+    dest: /etc/ssh/sshd_config
+  notify: restart sshd
+- name: create {{ item }} user
+  user:
+    name: "{{ item }}"
+    state: present
+    groups: sftponly
+    createhome: no
+    home: /srv/backup/{{ item }}
+    shell: /bin/false
+  with_items:
+    "{{ backup_clients }}"
+- name: create {{ item }} home
+  file:
+    name: /srv/backup/{{ item }}
+    owner: root
+    group: root
+    state: directory
+  with_items:
+    "{{ backup_clients }}"
+- name: create {{ item }} writable backup dir
+  file:
+    name: /srv/backup/{{ item }}/backup
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    state: directory
+  with_items:
+    "{{ backup_clients }}"

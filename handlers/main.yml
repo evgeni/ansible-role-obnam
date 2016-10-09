@@ -1,0 +1,6 @@
+---
+# handlers file for obnam
+- name: restart sshd
+  service:
+    name: ssh
+    state: restarted
