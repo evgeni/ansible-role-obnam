@@ -21,12 +21,25 @@
   delegate_to: "{{ item }}"
   with_items:
     - "{{ backup_targets }}"
+- name: generate /etc/obnam.conf
+  ini_file:
+    dest: /etc/obnam.conf
+    section: config
+    option: "{{ item['option'] }}"
+    value: "{{ item['value'] }}"
+  with_items:
+    - option: "client-name"
+      value: "{{ backup_client_name }}"
+    - option: exclude-caches
+      value: yes
+    - option: one-file-system
+      value: yes
+    - option: ssh-key
+      value: /root/.ssh/backup_key
 
-# obnam --client-name=ippai \
-# --encrypt-with=BFB74804AD8ACF73894CE2AAB12DFE314A9467F3 \
-# --exclude-caches --one-file-system \
+# obnam --encrypt-with=BFB74804AD8ACF73894CE2AAB12DFE314A9467F3 \
 # --repository=sftp://ippai@obnam/backup/ \
-# --ssh-key=/root/.ssh/backup_key backup /bin
+# backup /bin
 # obnam add-key ippai --keyid <meins>
 # obnam backup /
 
