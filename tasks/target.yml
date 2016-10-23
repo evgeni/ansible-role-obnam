@@ -6,6 +6,10 @@
   file:
     name: /srv/backup
     state: directory
+- name: mark backup folder with a CACHEDIR.TAG
+  copy:
+    dest: /srv/backup/CACHEDIR.TAG
+    content: "Signature: 8a477f597d28d172789f06886806bc55"
 - name: create /etc/ssh/authorized_keys folder
   file:
     name: /etc/ssh/authorized_keys
