@@ -3,3 +3,4 @@
 backup_node_type: client
 backup_targets: []
 backup_clients: []
+backup_client_name: "{{ ansible_hostname }}"
