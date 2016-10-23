@@ -1,6 +1,7 @@
 ---
 # defaults file for obnam
 backup_node_type: client
+backup_folder: /srv/backup
 backup_targets: []
 backup_clients: []
 backup_client_name: "{{ ansible_hostname }}"

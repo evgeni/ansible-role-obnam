@@ -4,11 +4,11 @@
     state: present
 - name: create backup folder
   file:
-    name: /srv/backup
+    name: "{{ backup_folder }}"
     state: directory
 - name: mark backup folder with a CACHEDIR.TAG
   copy:
-    dest: /srv/backup/CACHEDIR.TAG
+    dest: "{{ backup_folder }}/CACHEDIR.TAG"
     content: "Signature: 8a477f597d28d172789f06886806bc55"
 - name: create /etc/ssh/authorized_keys folder
   file:
@@ -40,13 +40,13 @@
     state: present
     groups: sftponly
     createhome: no
-    home: /srv/backup/{{ item }}
+    home: "{{ backup_folder }}/{{ item }}"
     shell: /bin/false
   with_items:
     "{{ backup_clients }}"
 - name: create {{ item }} home
   file:
-    name: /srv/backup/{{ item }}
+    name: "{{ backup_folder }}/{{ item }}"
     owner: root
     group: root
     state: directory
@@ -54,7 +54,7 @@
     "{{ backup_clients }}"
 - name: create {{ item }} writable backup dir
   file:
-    name: /srv/backup/{{ item }}/backup
+    name: "{{ backup_folder }}/{{ item }}/backup"
     owner: "{{ item }}"
     group: "{{ item }}"
     state: directory
