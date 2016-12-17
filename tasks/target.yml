@@ -34,9 +34,9 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK for sftponly users"
     dest: /etc/ssh/sshd_config
   notify: restart sshd
-- name: create {{ item }} user
+- name: create backup-{{ item }} user
   user:
-    name: "{{ item }}"
+    name: "backup-{{ item }}"
     state: present
     groups: sftponly
     createhome: no
@@ -55,8 +55,8 @@
 - name: create {{ item }} writable backup dir
   file:
     name: "{{ backup_folder }}/{{ item }}/backup"
-    owner: "{{ item }}"
-    group: "{{ item }}"
+    owner: "backup-{{ item }}"
+    group: "backup-{{ item }}"
     state: directory
   with_items:
     "{{ backup_clients }}"

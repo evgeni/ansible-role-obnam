@@ -13,10 +13,10 @@
   register: backup_key
 - name: deploy ssh key to storage
   authorized_key:
-    user: "{{ backup_client_name }}"
+    user: "backup-{{ backup_client_name }}"
     key: "{{ backup_key.ssh_public_key }}"
     exclusive: yes
-    path: /etc/ssh/authorized_keys/{{ backup_client_name }}
+    path: /etc/ssh/authorized_keys/backup-{{ backup_client_name }}
     manage_dir: no
   delegate_to: "{{ item }}"
   with_items:
