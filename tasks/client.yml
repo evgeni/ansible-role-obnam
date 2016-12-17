@@ -36,6 +36,11 @@
       value: yes
     - option: ssh-key
       value: /root/.ssh/backup_key
+    - option: lru-size
+      value: 2048
+    - option: upload-queue-size
+      value: 2048
+
 
 # obnam --encrypt-with=BFB74804AD8ACF73894CE2AAB12DFE314A9467F3 \
 # --repository=sftp://ippai@obnam/backup/ \
